@@ -2,10 +2,10 @@ import bcrypt from 'bcryptjs'
 
 import generateToken from '../../utils/generateToken'
 
-const login = async (parent, args, { prisma }, info) => {
+const login = async (parent, { data }, { prisma }, info) => {
   const user = await prisma.query.user({
     where: {
-      email: args.data.email
+      email: data.email
     }
   })
 
@@ -13,7 +13,7 @@ const login = async (parent, args, { prisma }, info) => {
     throw new Error('Unable to login')
   }
 
-  const isMatch = await bcrypt.compare(args.data.password, user.password)
+  const isMatch = await bcrypt.compare(data.password, user.password)
 
   if (!isMatch) {
     throw new Error('Unable to login')

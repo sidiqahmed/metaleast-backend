@@ -1,10 +1,10 @@
 import validatePassword from '../../utils/validatePassword'
 
-const updateUser = async (parent, args, { prisma, request }, info) => {
+const updateUser = async (parent, { data }, { prisma, request }, info) => {
   const userId = getUserId(request)
 
-  if (typeof args.data.password === 'string') {
-    args.data.password = await validatePassword(args.data.password, 'lolilol')
+  if (typeof data.password === 'string') {
+    data.password = await validatePassword(data.password, 'lolilol')
   }
 
   return prisma.mutation.updateUser(
@@ -12,7 +12,7 @@ const updateUser = async (parent, args, { prisma, request }, info) => {
       where: {
         id: userId
       },
-      data: args.data
+      data: data
     },
     info
   )
