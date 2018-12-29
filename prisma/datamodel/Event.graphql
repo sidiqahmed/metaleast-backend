@@ -4,4 +4,5 @@ type Event {
   date: DateTime!
   venue: Venue! @relation(name: "VenueToEvents")
   bands: [Band!]! @relation(name: "BandsToEvents")
+  attendees: [User!]! @relation(name: "UsersToEvents")
 }

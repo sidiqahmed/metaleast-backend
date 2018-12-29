@@ -1,4 +1,5 @@
 type User {
+  # main definition
   id: ID! @unique
   name: String!
   email: String! @unique
@@ -6,4 +7,8 @@ type User {
   enabled: Boolean! @default(value: "false")
   updatedAt: DateTime!
   createdAt: DateTime!
+
+  # what user is interested in
+  bands: [Band!]! @relation(name: "UsersToBands")
+  events: [Event!]! @relation(name: "UsersToEvents")
 }

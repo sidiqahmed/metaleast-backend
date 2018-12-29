@@ -1,6 +1,10 @@
 type Band {
+  # main definition
   id: ID! @unique
   name: String!
   styles: [Style!]! @relation(name: "BandsToStyles")
+
   shows: [Event!]! @relation(name: "BandsToEvents")
+
+  followers: [User!]! @relation(name: "UsersToBands")
 }
