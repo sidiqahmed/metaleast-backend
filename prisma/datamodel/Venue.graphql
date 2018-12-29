@@ -1,0 +1,7 @@
+type Venue {
+  id: ID! @unique
+  name: String!
+  location: Location!
+  address: String!
+  events: [Event!]! @relation(name: "VenueToEvents")
+}

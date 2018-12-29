@@ -2,3 +2,8 @@ endpoint: ${env:PRISMA_ENDPOINT}
 secret: ${env:PRISMA_SECRET}
 datamodel:
   - datamodel/User.graphql
+  - datamodel/Band.graphql
+  - datamodel/Style.graphql
+  - datamodel/Event.graphql
+  - datamodel/Venue.graphql
+  - datamodel/Location.graphql

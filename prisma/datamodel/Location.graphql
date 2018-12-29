@@ -1,0 +1,4 @@
+type Location {
+  id: ID! @unique
+  name: String!
+}

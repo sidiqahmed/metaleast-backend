@@ -1,0 +1,6 @@
+type Band {
+  id: ID! @unique
+  name: String!
+  styles: [Style!]! @relation(name: "BandsToStyles")
+  shows: [Event!]! @relation(name: "BandsToEvents")
+}
