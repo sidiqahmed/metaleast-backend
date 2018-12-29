@@ -1,0 +1,7 @@
+type Musician {
+  id: ID! @unique
+  name: String!
+  band: Band! @relation(name: "BandHasMusicians")
+  user: User @relation(name: "UserIsMusician")
+  instrument: Instrument!
+}

@@ -3,6 +3,8 @@ secret: ${env:PRISMA_SECRET}
 datamodel:
   - datamodel/User.graphql
   - datamodel/Band.graphql
+  - datamodel/Musician.graphql
+  - datamodel/Instrument.graphql
   - datamodel/Style.graphql
   - datamodel/Event.graphql
   - datamodel/Venue.graphql

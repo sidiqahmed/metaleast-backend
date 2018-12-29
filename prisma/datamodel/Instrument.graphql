@@ -1,0 +1,4 @@
+type Instrument {
+  id: ID! @unique
+  name: String!
+}

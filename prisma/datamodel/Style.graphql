@@ -1,5 +1,5 @@
 type Style {
   id: ID! @unique
   name: String! @unique
-  bands: [Band!]! @relation(name: "BandsToStyles")
+  bands: [Band!]! @relation(name: "BandsPlayStyles")
 }

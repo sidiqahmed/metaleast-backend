@@ -8,7 +8,9 @@ type User {
   updatedAt: DateTime!
   createdAt: DateTime!
 
+  musicians: [Musician!]! @relation(name: "UserIsMusician")
+
   # what user is interested in
-  bands: [Band!]! @relation(name: "UsersToBands")
-  events: [Event!]! @relation(name: "UsersToEvents")
+  bands: [Band!]! @relation(name: "UsersFollowBands")
+  events: [Event!]! @relation(name: "UsersGoToEvents")
 }

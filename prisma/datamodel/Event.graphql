@@ -2,7 +2,7 @@ type Event {
   id: ID! @unique
   name: String!
   date: DateTime!
-  venue: Venue! @relation(name: "VenueToEvents")
-  bands: [Band!]! @relation(name: "BandsToEvents")
-  attendees: [User!]! @relation(name: "UsersToEvents")
+  venue: Venue! @relation(name: "VenueOfEvents")
+  bands: [Band!]! @relation(name: "BandsPlayToEvents")
+  attendees: [User!]! @relation(name: "UsersGoToEvents")
 }
