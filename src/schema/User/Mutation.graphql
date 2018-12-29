@@ -1,0 +1,7 @@
+type Mutation {
+  createUser(data: CreateUserInput!): User!
+  confirmEmail(validationToken: String!): User
+  login(data: LoginUserInput!): AuthPayload!
+  updateUser(data: UpdateUserInput!): User!
+  deleteUser: User!
+}

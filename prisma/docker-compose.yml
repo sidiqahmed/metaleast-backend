@@ -1,0 +1,25 @@
+version: '3'
+services:
+  prisma:
+    env_file:
+      - ../config/dev.env
+    image: prismagraphql/prisma:1.13.4
+    restart: always
+    network_mode: "host"
+    ports:
+    - "4466:4466"
+    environment:
+      PRISMA_CONFIG: |
+        port: 4466
+        # uncomment the next line and provide the env var PRISMA_MANAGEMENT_API_SECRET=my-secret to activate cluster security
+        # managementApiSecret: my-secret
+        databases:
+          default:
+            connector: postgres
+            host: localhost
+            port: 5432
+            database: $${PSQL_DATABASE}
+            user: $${PSQL_USER}
+            password: $${PSQL_PASSWORD}
+            migrations: true
+            rawAccess: true

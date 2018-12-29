@@ -1,0 +1,17 @@
+input CreateUserInput {
+  name: String!
+  email: String!
+  password: String!
+  retypedPassword: String!
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  name: String
+  email: String
+  password: String
+}
