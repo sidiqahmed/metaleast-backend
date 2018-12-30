@@ -1,6 +1,7 @@
 type User {
   # main definition
   id: ID! @unique
+  role: Role! @default(value: "COMMENTATOR")
   name: String!
   email: String! @unique
   password: String!
