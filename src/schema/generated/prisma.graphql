@@ -1,208 +1,147 @@
 # source: http://localhost:4466/backend/dev
-# timestamp: Fri Dec 28 2018 13:20:33 GMT+0100 (Central European Standard Time)
+# timestamp: Sun Dec 30 2018 09:54:52 GMT+0100 (Central European Standard Time)
+
+type AggregateBand {
+  count: Int!
+}
+
+type AggregateEvent {
+  count: Int!
+}
+
+type AggregateInstrument {
+  count: Int!
+}
+
+type AggregateLocation {
+  count: Int!
+}
+
+type AggregateMusician {
+  count: Int!
+}
+
+type AggregateStyle {
+  count: Int!
+}
 
 type AggregateUser {
   count: Int!
 }
 
-type BatchPayload {
-  """The number of nodes that have been affected by the Batch operation."""
-  count: Long!
+type AggregateVenue {
+  count: Int!
 }
 
-scalar DateTime
-
-"""Raw JSON value"""
-scalar Json
-
-"""
-The `Long` scalar type represents non-fractional signed whole numeric values.
-Long can represent values between -(2^63) and 2^63 - 1.
-"""
-scalar Long
-
-type Mutation {
-  createUser(data: UserCreateInput!): User!
-  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
-  deleteUser(where: UserWhereUniqueInput!): User
-  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
-  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
-  deleteManyUsers(where: UserWhereInput): BatchPayload!
-  executeRaw(database: PrismaDatabase, query: String!): Json!
-}
-
-enum MutationType {
-  CREATED
-  UPDATED
-  DELETED
-}
-
-"""An object with an ID"""
-interface Node {
-  """The id of the object."""
-  id: ID!
-}
-
-"""Information about pagination in a connection."""
-type PageInfo {
-  """When paginating forwards, are there more items?"""
-  hasNextPage: Boolean!
-
-  """When paginating backwards, are there more items?"""
-  hasPreviousPage: Boolean!
-
-  """When paginating backwards, the cursor to continue."""
-  startCursor: String
-
-  """When paginating forwards, the cursor to continue."""
-  endCursor: String
-}
-
-enum PrismaDatabase {
-  default
-}
-
-type Query {
-  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
-  user(where: UserWhereUniqueInput!): User
-  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
-
-  """Fetches an object given its ID"""
-  node(
-    """The ID of an object"""
-    id: ID!
-  ): Node
-}
-
-type Subscription {
-  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
-}
-
-type User implements Node {
+type Band implements Node {
   id: ID!
   name: String!
-  email: String!
-  password: String!
-  enabled: Boolean!
-  updatedAt: DateTime!
-  createdAt: DateTime!
+  musicians(where: MusicianWhereInput, orderBy: MusicianOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Musician!]
+  styles(where: StyleWhereInput, orderBy: StyleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Style!]
+  shows(where: EventWhereInput, orderBy: EventOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Event!]
+  followers(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
 }
 
 """A connection to a list of items."""
-type UserConnection {
+type BandConnection {
   """Information to aid in pagination."""
   pageInfo: PageInfo!
 
   """A list of edges."""
-  edges: [UserEdge]!
-  aggregate: AggregateUser!
+  edges: [BandEdge]!
+  aggregate: AggregateBand!
 }
 
-input UserCreateInput {
+input BandCreateInput {
   name: String!
-  email: String!
-  password: String!
-  enabled: Boolean
+  musicians: MusicianCreateManyWithoutBandInput
+  styles: StyleCreateManyWithoutBandsInput
+  shows: EventCreateManyWithoutBandsInput
+  followers: UserCreateManyWithoutBandsInput
+}
+
+input BandCreateManyWithoutFollowersInput {
+  create: [BandCreateWithoutFollowersInput!]
+  connect: [BandWhereUniqueInput!]
+}
+
+input BandCreateManyWithoutShowsInput {
+  create: [BandCreateWithoutShowsInput!]
+  connect: [BandWhereUniqueInput!]
+}
+
+input BandCreateManyWithoutStylesInput {
+  create: [BandCreateWithoutStylesInput!]
+  connect: [BandWhereUniqueInput!]
+}
+
+input BandCreateOneWithoutMusiciansInput {
+  create: BandCreateWithoutMusiciansInput
+  connect: BandWhereUniqueInput
+}
+
+input BandCreateWithoutFollowersInput {
+  name: String!
+  musicians: MusicianCreateManyWithoutBandInput
+  styles: StyleCreateManyWithoutBandsInput
+  shows: EventCreateManyWithoutBandsInput
+}
+
+input BandCreateWithoutMusiciansInput {
+  name: String!
+  styles: StyleCreateManyWithoutBandsInput
+  shows: EventCreateManyWithoutBandsInput
+  followers: UserCreateManyWithoutBandsInput
+}
+
+input BandCreateWithoutShowsInput {
+  name: String!
+  musicians: MusicianCreateManyWithoutBandInput
+  styles: StyleCreateManyWithoutBandsInput
+  followers: UserCreateManyWithoutBandsInput
+}
+
+input BandCreateWithoutStylesInput {
+  name: String!
+  musicians: MusicianCreateManyWithoutBandInput
+  shows: EventCreateManyWithoutBandsInput
+  followers: UserCreateManyWithoutBandsInput
 }
 
 """An edge in a connection."""
-type UserEdge {
+type BandEdge {
   """The item at the end of the edge."""
-  node: User!
+  node: Band!
 
   """A cursor for use in pagination."""
   cursor: String!
 }
 
-enum UserOrderByInput {
+enum BandOrderByInput {
   id_ASC
   id_DESC
   name_ASC
   name_DESC
-  email_ASC
-  email_DESC
-  password_ASC
-  password_DESC
-  enabled_ASC
-  enabled_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
   createdAt_DESC
 }
 
-type UserPreviousValues {
+type BandPreviousValues {
   id: ID!
   name: String!
-  email: String!
-  password: String!
-  enabled: Boolean!
-  updatedAt: DateTime!
-  createdAt: DateTime!
 }
 
-type UserSubscriptionPayload {
-  mutation: MutationType!
-  node: User
-  updatedFields: [String!]
-  previousValues: UserPreviousValues
-}
-
-input UserSubscriptionWhereInput {
+input BandScalarWhereInput {
   """Logical AND on all given filters."""
-  AND: [UserSubscriptionWhereInput!]
+  AND: [BandScalarWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [UserSubscriptionWhereInput!]
+  OR: [BandScalarWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [UserSubscriptionWhereInput!]
-
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
-  mutation_in: [MutationType!]
-
-  """
-  The subscription event gets only dispatched when one of the updated fields names is included in this list
-  """
-  updatedFields_contains: String
-
-  """
-  The subscription event gets only dispatched when all of the field names included in this list have been updated
-  """
-  updatedFields_contains_every: [String!]
-
-  """
-  The subscription event gets only dispatched when some of the field names included in this list have been updated
-  """
-  updatedFields_contains_some: [String!]
-  node: UserWhereInput
-}
-
-input UserUpdateInput {
-  name: String
-  email: String
-  password: String
-  enabled: Boolean
-}
-
-input UserUpdateManyMutationInput {
-  name: String
-  email: String
-  password: String
-  enabled: Boolean
-}
-
-input UserWhereInput {
-  """Logical AND on all given filters."""
-  AND: [UserWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [UserWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [UserWhereInput!]
+  NOT: [BandScalarWhereInput!]
   id: ID
 
   """All values that are not equal to given value."""
@@ -243,6 +182,2245 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+}
+
+type BandSubscriptionPayload {
+  mutation: MutationType!
+  node: Band
+  updatedFields: [String!]
+  previousValues: BandPreviousValues
+}
+
+input BandSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [BandSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [BandSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [BandSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: BandWhereInput
+}
+
+input BandUpdateInput {
+  name: String
+  musicians: MusicianUpdateManyWithoutBandInput
+  styles: StyleUpdateManyWithoutBandsInput
+  shows: EventUpdateManyWithoutBandsInput
+  followers: UserUpdateManyWithoutBandsInput
+}
+
+input BandUpdateManyDataInput {
+  name: String
+}
+
+input BandUpdateManyMutationInput {
+  name: String
+}
+
+input BandUpdateManyWithoutFollowersInput {
+  create: [BandCreateWithoutFollowersInput!]
+  connect: [BandWhereUniqueInput!]
+  disconnect: [BandWhereUniqueInput!]
+  delete: [BandWhereUniqueInput!]
+  update: [BandUpdateWithWhereUniqueWithoutFollowersInput!]
+  updateMany: [BandUpdateManyWithWhereNestedInput!]
+  deleteMany: [BandScalarWhereInput!]
+  upsert: [BandUpsertWithWhereUniqueWithoutFollowersInput!]
+}
+
+input BandUpdateManyWithoutShowsInput {
+  create: [BandCreateWithoutShowsInput!]
+  connect: [BandWhereUniqueInput!]
+  disconnect: [BandWhereUniqueInput!]
+  delete: [BandWhereUniqueInput!]
+  update: [BandUpdateWithWhereUniqueWithoutShowsInput!]
+  updateMany: [BandUpdateManyWithWhereNestedInput!]
+  deleteMany: [BandScalarWhereInput!]
+  upsert: [BandUpsertWithWhereUniqueWithoutShowsInput!]
+}
+
+input BandUpdateManyWithoutStylesInput {
+  create: [BandCreateWithoutStylesInput!]
+  connect: [BandWhereUniqueInput!]
+  disconnect: [BandWhereUniqueInput!]
+  delete: [BandWhereUniqueInput!]
+  update: [BandUpdateWithWhereUniqueWithoutStylesInput!]
+  updateMany: [BandUpdateManyWithWhereNestedInput!]
+  deleteMany: [BandScalarWhereInput!]
+  upsert: [BandUpsertWithWhereUniqueWithoutStylesInput!]
+}
+
+input BandUpdateManyWithWhereNestedInput {
+  where: BandScalarWhereInput!
+  data: BandUpdateManyDataInput!
+}
+
+input BandUpdateOneRequiredWithoutMusiciansInput {
+  create: BandCreateWithoutMusiciansInput
+  connect: BandWhereUniqueInput
+  update: BandUpdateWithoutMusiciansDataInput
+  upsert: BandUpsertWithoutMusiciansInput
+}
+
+input BandUpdateWithoutFollowersDataInput {
+  name: String
+  musicians: MusicianUpdateManyWithoutBandInput
+  styles: StyleUpdateManyWithoutBandsInput
+  shows: EventUpdateManyWithoutBandsInput
+}
+
+input BandUpdateWithoutMusiciansDataInput {
+  name: String
+  styles: StyleUpdateManyWithoutBandsInput
+  shows: EventUpdateManyWithoutBandsInput
+  followers: UserUpdateManyWithoutBandsInput
+}
+
+input BandUpdateWithoutShowsDataInput {
+  name: String
+  musicians: MusicianUpdateManyWithoutBandInput
+  styles: StyleUpdateManyWithoutBandsInput
+  followers: UserUpdateManyWithoutBandsInput
+}
+
+input BandUpdateWithoutStylesDataInput {
+  name: String
+  musicians: MusicianUpdateManyWithoutBandInput
+  shows: EventUpdateManyWithoutBandsInput
+  followers: UserUpdateManyWithoutBandsInput
+}
+
+input BandUpdateWithWhereUniqueWithoutFollowersInput {
+  where: BandWhereUniqueInput!
+  data: BandUpdateWithoutFollowersDataInput!
+}
+
+input BandUpdateWithWhereUniqueWithoutShowsInput {
+  where: BandWhereUniqueInput!
+  data: BandUpdateWithoutShowsDataInput!
+}
+
+input BandUpdateWithWhereUniqueWithoutStylesInput {
+  where: BandWhereUniqueInput!
+  data: BandUpdateWithoutStylesDataInput!
+}
+
+input BandUpsertWithoutMusiciansInput {
+  update: BandUpdateWithoutMusiciansDataInput!
+  create: BandCreateWithoutMusiciansInput!
+}
+
+input BandUpsertWithWhereUniqueWithoutFollowersInput {
+  where: BandWhereUniqueInput!
+  update: BandUpdateWithoutFollowersDataInput!
+  create: BandCreateWithoutFollowersInput!
+}
+
+input BandUpsertWithWhereUniqueWithoutShowsInput {
+  where: BandWhereUniqueInput!
+  update: BandUpdateWithoutShowsDataInput!
+  create: BandCreateWithoutShowsInput!
+}
+
+input BandUpsertWithWhereUniqueWithoutStylesInput {
+  where: BandWhereUniqueInput!
+  update: BandUpdateWithoutStylesDataInput!
+  create: BandCreateWithoutStylesInput!
+}
+
+input BandWhereInput {
+  """Logical AND on all given filters."""
+  AND: [BandWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [BandWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [BandWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  musicians_every: MusicianWhereInput
+  musicians_some: MusicianWhereInput
+  musicians_none: MusicianWhereInput
+  styles_every: StyleWhereInput
+  styles_some: StyleWhereInput
+  styles_none: StyleWhereInput
+  shows_every: EventWhereInput
+  shows_some: EventWhereInput
+  shows_none: EventWhereInput
+  followers_every: UserWhereInput
+  followers_some: UserWhereInput
+  followers_none: UserWhereInput
+}
+
+input BandWhereUniqueInput {
+  id: ID
+}
+
+type BatchPayload {
+  """The number of nodes that have been affected by the Batch operation."""
+  count: Long!
+}
+
+scalar DateTime
+
+type Event implements Node {
+  id: ID!
+  name: String!
+  date: DateTime!
+  venue: Venue!
+  bands(where: BandWhereInput, orderBy: BandOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Band!]
+  attendees(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+}
+
+"""A connection to a list of items."""
+type EventConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [EventEdge]!
+  aggregate: AggregateEvent!
+}
+
+input EventCreateInput {
+  name: String!
+  date: DateTime!
+  venue: VenueCreateOneWithoutEventsInput!
+  bands: BandCreateManyWithoutShowsInput
+  attendees: UserCreateManyWithoutEventsInput
+}
+
+input EventCreateManyWithoutAttendeesInput {
+  create: [EventCreateWithoutAttendeesInput!]
+  connect: [EventWhereUniqueInput!]
+}
+
+input EventCreateManyWithoutBandsInput {
+  create: [EventCreateWithoutBandsInput!]
+  connect: [EventWhereUniqueInput!]
+}
+
+input EventCreateManyWithoutVenueInput {
+  create: [EventCreateWithoutVenueInput!]
+  connect: [EventWhereUniqueInput!]
+}
+
+input EventCreateWithoutAttendeesInput {
+  name: String!
+  date: DateTime!
+  venue: VenueCreateOneWithoutEventsInput!
+  bands: BandCreateManyWithoutShowsInput
+}
+
+input EventCreateWithoutBandsInput {
+  name: String!
+  date: DateTime!
+  venue: VenueCreateOneWithoutEventsInput!
+  attendees: UserCreateManyWithoutEventsInput
+}
+
+input EventCreateWithoutVenueInput {
+  name: String!
+  date: DateTime!
+  bands: BandCreateManyWithoutShowsInput
+  attendees: UserCreateManyWithoutEventsInput
+}
+
+"""An edge in a connection."""
+type EventEdge {
+  """The item at the end of the edge."""
+  node: Event!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum EventOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  date_ASC
+  date_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type EventPreviousValues {
+  id: ID!
+  name: String!
+  date: DateTime!
+}
+
+input EventScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [EventScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [EventScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [EventScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  date: DateTime
+
+  """All values that are not equal to given value."""
+  date_not: DateTime
+
+  """All values that are contained in given list."""
+  date_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  date_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  date_lt: DateTime
+
+  """All values less than or equal the given value."""
+  date_lte: DateTime
+
+  """All values greater than the given value."""
+  date_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  date_gte: DateTime
+}
+
+type EventSubscriptionPayload {
+  mutation: MutationType!
+  node: Event
+  updatedFields: [String!]
+  previousValues: EventPreviousValues
+}
+
+input EventSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [EventSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [EventSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [EventSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: EventWhereInput
+}
+
+input EventUpdateInput {
+  name: String
+  date: DateTime
+  venue: VenueUpdateOneRequiredWithoutEventsInput
+  bands: BandUpdateManyWithoutShowsInput
+  attendees: UserUpdateManyWithoutEventsInput
+}
+
+input EventUpdateManyDataInput {
+  name: String
+  date: DateTime
+}
+
+input EventUpdateManyMutationInput {
+  name: String
+  date: DateTime
+}
+
+input EventUpdateManyWithoutAttendeesInput {
+  create: [EventCreateWithoutAttendeesInput!]
+  connect: [EventWhereUniqueInput!]
+  disconnect: [EventWhereUniqueInput!]
+  delete: [EventWhereUniqueInput!]
+  update: [EventUpdateWithWhereUniqueWithoutAttendeesInput!]
+  updateMany: [EventUpdateManyWithWhereNestedInput!]
+  deleteMany: [EventScalarWhereInput!]
+  upsert: [EventUpsertWithWhereUniqueWithoutAttendeesInput!]
+}
+
+input EventUpdateManyWithoutBandsInput {
+  create: [EventCreateWithoutBandsInput!]
+  connect: [EventWhereUniqueInput!]
+  disconnect: [EventWhereUniqueInput!]
+  delete: [EventWhereUniqueInput!]
+  update: [EventUpdateWithWhereUniqueWithoutBandsInput!]
+  updateMany: [EventUpdateManyWithWhereNestedInput!]
+  deleteMany: [EventScalarWhereInput!]
+  upsert: [EventUpsertWithWhereUniqueWithoutBandsInput!]
+}
+
+input EventUpdateManyWithoutVenueInput {
+  create: [EventCreateWithoutVenueInput!]
+  connect: [EventWhereUniqueInput!]
+  disconnect: [EventWhereUniqueInput!]
+  delete: [EventWhereUniqueInput!]
+  update: [EventUpdateWithWhereUniqueWithoutVenueInput!]
+  updateMany: [EventUpdateManyWithWhereNestedInput!]
+  deleteMany: [EventScalarWhereInput!]
+  upsert: [EventUpsertWithWhereUniqueWithoutVenueInput!]
+}
+
+input EventUpdateManyWithWhereNestedInput {
+  where: EventScalarWhereInput!
+  data: EventUpdateManyDataInput!
+}
+
+input EventUpdateWithoutAttendeesDataInput {
+  name: String
+  date: DateTime
+  venue: VenueUpdateOneRequiredWithoutEventsInput
+  bands: BandUpdateManyWithoutShowsInput
+}
+
+input EventUpdateWithoutBandsDataInput {
+  name: String
+  date: DateTime
+  venue: VenueUpdateOneRequiredWithoutEventsInput
+  attendees: UserUpdateManyWithoutEventsInput
+}
+
+input EventUpdateWithoutVenueDataInput {
+  name: String
+  date: DateTime
+  bands: BandUpdateManyWithoutShowsInput
+  attendees: UserUpdateManyWithoutEventsInput
+}
+
+input EventUpdateWithWhereUniqueWithoutAttendeesInput {
+  where: EventWhereUniqueInput!
+  data: EventUpdateWithoutAttendeesDataInput!
+}
+
+input EventUpdateWithWhereUniqueWithoutBandsInput {
+  where: EventWhereUniqueInput!
+  data: EventUpdateWithoutBandsDataInput!
+}
+
+input EventUpdateWithWhereUniqueWithoutVenueInput {
+  where: EventWhereUniqueInput!
+  data: EventUpdateWithoutVenueDataInput!
+}
+
+input EventUpsertWithWhereUniqueWithoutAttendeesInput {
+  where: EventWhereUniqueInput!
+  update: EventUpdateWithoutAttendeesDataInput!
+  create: EventCreateWithoutAttendeesInput!
+}
+
+input EventUpsertWithWhereUniqueWithoutBandsInput {
+  where: EventWhereUniqueInput!
+  update: EventUpdateWithoutBandsDataInput!
+  create: EventCreateWithoutBandsInput!
+}
+
+input EventUpsertWithWhereUniqueWithoutVenueInput {
+  where: EventWhereUniqueInput!
+  update: EventUpdateWithoutVenueDataInput!
+  create: EventCreateWithoutVenueInput!
+}
+
+input EventWhereInput {
+  """Logical AND on all given filters."""
+  AND: [EventWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [EventWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [EventWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  date: DateTime
+
+  """All values that are not equal to given value."""
+  date_not: DateTime
+
+  """All values that are contained in given list."""
+  date_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  date_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  date_lt: DateTime
+
+  """All values less than or equal the given value."""
+  date_lte: DateTime
+
+  """All values greater than the given value."""
+  date_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  date_gte: DateTime
+  venue: VenueWhereInput
+  bands_every: BandWhereInput
+  bands_some: BandWhereInput
+  bands_none: BandWhereInput
+  attendees_every: UserWhereInput
+  attendees_some: UserWhereInput
+  attendees_none: UserWhereInput
+}
+
+input EventWhereUniqueInput {
+  id: ID
+}
+
+type Instrument implements Node {
+  id: ID!
+  name: String!
+}
+
+"""A connection to a list of items."""
+type InstrumentConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [InstrumentEdge]!
+  aggregate: AggregateInstrument!
+}
+
+input InstrumentCreateInput {
+  name: String!
+}
+
+input InstrumentCreateOneInput {
+  create: InstrumentCreateInput
+  connect: InstrumentWhereUniqueInput
+}
+
+"""An edge in a connection."""
+type InstrumentEdge {
+  """The item at the end of the edge."""
+  node: Instrument!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum InstrumentOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type InstrumentPreviousValues {
+  id: ID!
+  name: String!
+}
+
+type InstrumentSubscriptionPayload {
+  mutation: MutationType!
+  node: Instrument
+  updatedFields: [String!]
+  previousValues: InstrumentPreviousValues
+}
+
+input InstrumentSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [InstrumentSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [InstrumentSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [InstrumentSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: InstrumentWhereInput
+}
+
+input InstrumentUpdateDataInput {
+  name: String
+}
+
+input InstrumentUpdateInput {
+  name: String
+}
+
+input InstrumentUpdateManyMutationInput {
+  name: String
+}
+
+input InstrumentUpdateOneRequiredInput {
+  create: InstrumentCreateInput
+  connect: InstrumentWhereUniqueInput
+  update: InstrumentUpdateDataInput
+  upsert: InstrumentUpsertNestedInput
+}
+
+input InstrumentUpsertNestedInput {
+  update: InstrumentUpdateDataInput!
+  create: InstrumentCreateInput!
+}
+
+input InstrumentWhereInput {
+  """Logical AND on all given filters."""
+  AND: [InstrumentWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [InstrumentWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [InstrumentWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+}
+
+input InstrumentWhereUniqueInput {
+  id: ID
+}
+
+"""Raw JSON value"""
+scalar Json
+
+type Location implements Node {
+  id: ID!
+  name: String!
+}
+
+"""A connection to a list of items."""
+type LocationConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [LocationEdge]!
+  aggregate: AggregateLocation!
+}
+
+input LocationCreateInput {
+  name: String!
+}
+
+input LocationCreateOneInput {
+  create: LocationCreateInput
+  connect: LocationWhereUniqueInput
+}
+
+"""An edge in a connection."""
+type LocationEdge {
+  """The item at the end of the edge."""
+  node: Location!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum LocationOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type LocationPreviousValues {
+  id: ID!
+  name: String!
+}
+
+type LocationSubscriptionPayload {
+  mutation: MutationType!
+  node: Location
+  updatedFields: [String!]
+  previousValues: LocationPreviousValues
+}
+
+input LocationSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [LocationSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [LocationSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [LocationSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: LocationWhereInput
+}
+
+input LocationUpdateDataInput {
+  name: String
+}
+
+input LocationUpdateInput {
+  name: String
+}
+
+input LocationUpdateManyMutationInput {
+  name: String
+}
+
+input LocationUpdateOneRequiredInput {
+  create: LocationCreateInput
+  connect: LocationWhereUniqueInput
+  update: LocationUpdateDataInput
+  upsert: LocationUpsertNestedInput
+}
+
+input LocationUpsertNestedInput {
+  update: LocationUpdateDataInput!
+  create: LocationCreateInput!
+}
+
+input LocationWhereInput {
+  """Logical AND on all given filters."""
+  AND: [LocationWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [LocationWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [LocationWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+}
+
+input LocationWhereUniqueInput {
+  id: ID
+}
+
+"""
+The `Long` scalar type represents non-fractional signed whole numeric values.
+Long can represent values between -(2^63) and 2^63 - 1.
+"""
+scalar Long
+
+type Musician implements Node {
+  id: ID!
+  name: String!
+  band: Band!
+  user: User
+  instrument: Instrument!
+}
+
+"""A connection to a list of items."""
+type MusicianConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [MusicianEdge]!
+  aggregate: AggregateMusician!
+}
+
+input MusicianCreateInput {
+  name: String!
+  band: BandCreateOneWithoutMusiciansInput!
+  user: UserCreateOneWithoutMusiciansInput
+  instrument: InstrumentCreateOneInput!
+}
+
+input MusicianCreateManyWithoutBandInput {
+  create: [MusicianCreateWithoutBandInput!]
+  connect: [MusicianWhereUniqueInput!]
+}
+
+input MusicianCreateManyWithoutUserInput {
+  create: [MusicianCreateWithoutUserInput!]
+  connect: [MusicianWhereUniqueInput!]
+}
+
+input MusicianCreateWithoutBandInput {
+  name: String!
+  user: UserCreateOneWithoutMusiciansInput
+  instrument: InstrumentCreateOneInput!
+}
+
+input MusicianCreateWithoutUserInput {
+  name: String!
+  band: BandCreateOneWithoutMusiciansInput!
+  instrument: InstrumentCreateOneInput!
+}
+
+"""An edge in a connection."""
+type MusicianEdge {
+  """The item at the end of the edge."""
+  node: Musician!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum MusicianOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type MusicianPreviousValues {
+  id: ID!
+  name: String!
+}
+
+input MusicianScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [MusicianScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [MusicianScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [MusicianScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+}
+
+type MusicianSubscriptionPayload {
+  mutation: MutationType!
+  node: Musician
+  updatedFields: [String!]
+  previousValues: MusicianPreviousValues
+}
+
+input MusicianSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [MusicianSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [MusicianSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [MusicianSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: MusicianWhereInput
+}
+
+input MusicianUpdateInput {
+  name: String
+  band: BandUpdateOneRequiredWithoutMusiciansInput
+  user: UserUpdateOneWithoutMusiciansInput
+  instrument: InstrumentUpdateOneRequiredInput
+}
+
+input MusicianUpdateManyDataInput {
+  name: String
+}
+
+input MusicianUpdateManyMutationInput {
+  name: String
+}
+
+input MusicianUpdateManyWithoutBandInput {
+  create: [MusicianCreateWithoutBandInput!]
+  connect: [MusicianWhereUniqueInput!]
+  disconnect: [MusicianWhereUniqueInput!]
+  delete: [MusicianWhereUniqueInput!]
+  update: [MusicianUpdateWithWhereUniqueWithoutBandInput!]
+  updateMany: [MusicianUpdateManyWithWhereNestedInput!]
+  deleteMany: [MusicianScalarWhereInput!]
+  upsert: [MusicianUpsertWithWhereUniqueWithoutBandInput!]
+}
+
+input MusicianUpdateManyWithoutUserInput {
+  create: [MusicianCreateWithoutUserInput!]
+  connect: [MusicianWhereUniqueInput!]
+  disconnect: [MusicianWhereUniqueInput!]
+  delete: [MusicianWhereUniqueInput!]
+  update: [MusicianUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [MusicianUpdateManyWithWhereNestedInput!]
+  deleteMany: [MusicianScalarWhereInput!]
+  upsert: [MusicianUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input MusicianUpdateManyWithWhereNestedInput {
+  where: MusicianScalarWhereInput!
+  data: MusicianUpdateManyDataInput!
+}
+
+input MusicianUpdateWithoutBandDataInput {
+  name: String
+  user: UserUpdateOneWithoutMusiciansInput
+  instrument: InstrumentUpdateOneRequiredInput
+}
+
+input MusicianUpdateWithoutUserDataInput {
+  name: String
+  band: BandUpdateOneRequiredWithoutMusiciansInput
+  instrument: InstrumentUpdateOneRequiredInput
+}
+
+input MusicianUpdateWithWhereUniqueWithoutBandInput {
+  where: MusicianWhereUniqueInput!
+  data: MusicianUpdateWithoutBandDataInput!
+}
+
+input MusicianUpdateWithWhereUniqueWithoutUserInput {
+  where: MusicianWhereUniqueInput!
+  data: MusicianUpdateWithoutUserDataInput!
+}
+
+input MusicianUpsertWithWhereUniqueWithoutBandInput {
+  where: MusicianWhereUniqueInput!
+  update: MusicianUpdateWithoutBandDataInput!
+  create: MusicianCreateWithoutBandInput!
+}
+
+input MusicianUpsertWithWhereUniqueWithoutUserInput {
+  where: MusicianWhereUniqueInput!
+  update: MusicianUpdateWithoutUserDataInput!
+  create: MusicianCreateWithoutUserInput!
+}
+
+input MusicianWhereInput {
+  """Logical AND on all given filters."""
+  AND: [MusicianWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [MusicianWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [MusicianWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  band: BandWhereInput
+  user: UserWhereInput
+  instrument: InstrumentWhereInput
+}
+
+input MusicianWhereUniqueInput {
+  id: ID
+}
+
+type Mutation {
+  createUser(data: UserCreateInput!): User!
+  createBand(data: BandCreateInput!): Band!
+  createMusician(data: MusicianCreateInput!): Musician!
+  createStyle(data: StyleCreateInput!): Style!
+  createEvent(data: EventCreateInput!): Event!
+  createVenue(data: VenueCreateInput!): Venue!
+  createLocation(data: LocationCreateInput!): Location!
+  createInstrument(data: InstrumentCreateInput!): Instrument!
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  updateBand(data: BandUpdateInput!, where: BandWhereUniqueInput!): Band
+  updateMusician(data: MusicianUpdateInput!, where: MusicianWhereUniqueInput!): Musician
+  updateStyle(data: StyleUpdateInput!, where: StyleWhereUniqueInput!): Style
+  updateEvent(data: EventUpdateInput!, where: EventWhereUniqueInput!): Event
+  updateVenue(data: VenueUpdateInput!, where: VenueWhereUniqueInput!): Venue
+  updateLocation(data: LocationUpdateInput!, where: LocationWhereUniqueInput!): Location
+  updateInstrument(data: InstrumentUpdateInput!, where: InstrumentWhereUniqueInput!): Instrument
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteBand(where: BandWhereUniqueInput!): Band
+  deleteMusician(where: MusicianWhereUniqueInput!): Musician
+  deleteStyle(where: StyleWhereUniqueInput!): Style
+  deleteEvent(where: EventWhereUniqueInput!): Event
+  deleteVenue(where: VenueWhereUniqueInput!): Venue
+  deleteLocation(where: LocationWhereUniqueInput!): Location
+  deleteInstrument(where: InstrumentWhereUniqueInput!): Instrument
+  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  upsertBand(where: BandWhereUniqueInput!, create: BandCreateInput!, update: BandUpdateInput!): Band!
+  upsertMusician(where: MusicianWhereUniqueInput!, create: MusicianCreateInput!, update: MusicianUpdateInput!): Musician!
+  upsertStyle(where: StyleWhereUniqueInput!, create: StyleCreateInput!, update: StyleUpdateInput!): Style!
+  upsertEvent(where: EventWhereUniqueInput!, create: EventCreateInput!, update: EventUpdateInput!): Event!
+  upsertVenue(where: VenueWhereUniqueInput!, create: VenueCreateInput!, update: VenueUpdateInput!): Venue!
+  upsertLocation(where: LocationWhereUniqueInput!, create: LocationCreateInput!, update: LocationUpdateInput!): Location!
+  upsertInstrument(where: InstrumentWhereUniqueInput!, create: InstrumentCreateInput!, update: InstrumentUpdateInput!): Instrument!
+  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  updateManyBands(data: BandUpdateManyMutationInput!, where: BandWhereInput): BatchPayload!
+  updateManyMusicians(data: MusicianUpdateManyMutationInput!, where: MusicianWhereInput): BatchPayload!
+  updateManyStyles(data: StyleUpdateManyMutationInput!, where: StyleWhereInput): BatchPayload!
+  updateManyEvents(data: EventUpdateManyMutationInput!, where: EventWhereInput): BatchPayload!
+  updateManyVenues(data: VenueUpdateManyMutationInput!, where: VenueWhereInput): BatchPayload!
+  updateManyLocations(data: LocationUpdateManyMutationInput!, where: LocationWhereInput): BatchPayload!
+  updateManyInstruments(data: InstrumentUpdateManyMutationInput!, where: InstrumentWhereInput): BatchPayload!
+  deleteManyUsers(where: UserWhereInput): BatchPayload!
+  deleteManyBands(where: BandWhereInput): BatchPayload!
+  deleteManyMusicians(where: MusicianWhereInput): BatchPayload!
+  deleteManyStyles(where: StyleWhereInput): BatchPayload!
+  deleteManyEvents(where: EventWhereInput): BatchPayload!
+  deleteManyVenues(where: VenueWhereInput): BatchPayload!
+  deleteManyLocations(where: LocationWhereInput): BatchPayload!
+  deleteManyInstruments(where: InstrumentWhereInput): BatchPayload!
+  executeRaw(database: PrismaDatabase, query: String!): Json!
+}
+
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+"""An object with an ID"""
+interface Node {
+  """The id of the object."""
+  id: ID!
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+enum PrismaDatabase {
+  default
+}
+
+type Query {
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  bands(where: BandWhereInput, orderBy: BandOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Band]!
+  musicians(where: MusicianWhereInput, orderBy: MusicianOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Musician]!
+  styles(where: StyleWhereInput, orderBy: StyleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Style]!
+  events(where: EventWhereInput, orderBy: EventOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Event]!
+  venues(where: VenueWhereInput, orderBy: VenueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Venue]!
+  locations(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Location]!
+  instruments(where: InstrumentWhereInput, orderBy: InstrumentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Instrument]!
+  user(where: UserWhereUniqueInput!): User
+  band(where: BandWhereUniqueInput!): Band
+  musician(where: MusicianWhereUniqueInput!): Musician
+  style(where: StyleWhereUniqueInput!): Style
+  event(where: EventWhereUniqueInput!): Event
+  venue(where: VenueWhereUniqueInput!): Venue
+  location(where: LocationWhereUniqueInput!): Location
+  instrument(where: InstrumentWhereUniqueInput!): Instrument
+  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  bandsConnection(where: BandWhereInput, orderBy: BandOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BandConnection!
+  musiciansConnection(where: MusicianWhereInput, orderBy: MusicianOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MusicianConnection!
+  stylesConnection(where: StyleWhereInput, orderBy: StyleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): StyleConnection!
+  eventsConnection(where: EventWhereInput, orderBy: EventOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): EventConnection!
+  venuesConnection(where: VenueWhereInput, orderBy: VenueOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): VenueConnection!
+  locationsConnection(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LocationConnection!
+  instrumentsConnection(where: InstrumentWhereInput, orderBy: InstrumentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): InstrumentConnection!
+
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+}
+
+enum Role {
+  SUPERADMIN
+  ADMIN
+  WRITER
+  COMMENTATOR
+  BANNED
+}
+
+type Style implements Node {
+  id: ID!
+  name: String!
+  bands(where: BandWhereInput, orderBy: BandOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Band!]
+}
+
+"""A connection to a list of items."""
+type StyleConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [StyleEdge]!
+  aggregate: AggregateStyle!
+}
+
+input StyleCreateInput {
+  name: String!
+  bands: BandCreateManyWithoutStylesInput
+}
+
+input StyleCreateManyWithoutBandsInput {
+  create: [StyleCreateWithoutBandsInput!]
+  connect: [StyleWhereUniqueInput!]
+}
+
+input StyleCreateWithoutBandsInput {
+  name: String!
+}
+
+"""An edge in a connection."""
+type StyleEdge {
+  """The item at the end of the edge."""
+  node: Style!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum StyleOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type StylePreviousValues {
+  id: ID!
+  name: String!
+}
+
+input StyleScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [StyleScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [StyleScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [StyleScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+}
+
+type StyleSubscriptionPayload {
+  mutation: MutationType!
+  node: Style
+  updatedFields: [String!]
+  previousValues: StylePreviousValues
+}
+
+input StyleSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [StyleSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [StyleSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [StyleSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: StyleWhereInput
+}
+
+input StyleUpdateInput {
+  name: String
+  bands: BandUpdateManyWithoutStylesInput
+}
+
+input StyleUpdateManyDataInput {
+  name: String
+}
+
+input StyleUpdateManyMutationInput {
+  name: String
+}
+
+input StyleUpdateManyWithoutBandsInput {
+  create: [StyleCreateWithoutBandsInput!]
+  connect: [StyleWhereUniqueInput!]
+  disconnect: [StyleWhereUniqueInput!]
+  delete: [StyleWhereUniqueInput!]
+  update: [StyleUpdateWithWhereUniqueWithoutBandsInput!]
+  updateMany: [StyleUpdateManyWithWhereNestedInput!]
+  deleteMany: [StyleScalarWhereInput!]
+  upsert: [StyleUpsertWithWhereUniqueWithoutBandsInput!]
+}
+
+input StyleUpdateManyWithWhereNestedInput {
+  where: StyleScalarWhereInput!
+  data: StyleUpdateManyDataInput!
+}
+
+input StyleUpdateWithoutBandsDataInput {
+  name: String
+}
+
+input StyleUpdateWithWhereUniqueWithoutBandsInput {
+  where: StyleWhereUniqueInput!
+  data: StyleUpdateWithoutBandsDataInput!
+}
+
+input StyleUpsertWithWhereUniqueWithoutBandsInput {
+  where: StyleWhereUniqueInput!
+  update: StyleUpdateWithoutBandsDataInput!
+  create: StyleCreateWithoutBandsInput!
+}
+
+input StyleWhereInput {
+  """Logical AND on all given filters."""
+  AND: [StyleWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [StyleWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [StyleWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  bands_every: BandWhereInput
+  bands_some: BandWhereInput
+  bands_none: BandWhereInput
+}
+
+input StyleWhereUniqueInput {
+  id: ID
+  name: String
+}
+
+type Subscription {
+  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+  band(where: BandSubscriptionWhereInput): BandSubscriptionPayload
+  musician(where: MusicianSubscriptionWhereInput): MusicianSubscriptionPayload
+  style(where: StyleSubscriptionWhereInput): StyleSubscriptionPayload
+  event(where: EventSubscriptionWhereInput): EventSubscriptionPayload
+  venue(where: VenueSubscriptionWhereInput): VenueSubscriptionPayload
+  location(where: LocationSubscriptionWhereInput): LocationSubscriptionPayload
+  instrument(where: InstrumentSubscriptionWhereInput): InstrumentSubscriptionPayload
+}
+
+type User implements Node {
+  id: ID!
+  role: Role!
+  name: String!
+  email: String!
+  password: String!
+  enabled: Boolean!
+  updatedAt: DateTime!
+  createdAt: DateTime!
+  musicians(where: MusicianWhereInput, orderBy: MusicianOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Musician!]
+  bands(where: BandWhereInput, orderBy: BandOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Band!]
+  events(where: EventWhereInput, orderBy: EventOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Event!]
+}
+
+"""A connection to a list of items."""
+type UserConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [UserEdge]!
+  aggregate: AggregateUser!
+}
+
+input UserCreateInput {
+  role: Role
+  name: String!
+  email: String!
+  password: String!
+  enabled: Boolean
+  musicians: MusicianCreateManyWithoutUserInput
+  bands: BandCreateManyWithoutFollowersInput
+  events: EventCreateManyWithoutAttendeesInput
+}
+
+input UserCreateManyWithoutBandsInput {
+  create: [UserCreateWithoutBandsInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateManyWithoutEventsInput {
+  create: [UserCreateWithoutEventsInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateOneWithoutMusiciansInput {
+  create: UserCreateWithoutMusiciansInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutBandsInput {
+  role: Role
+  name: String!
+  email: String!
+  password: String!
+  enabled: Boolean
+  musicians: MusicianCreateManyWithoutUserInput
+  events: EventCreateManyWithoutAttendeesInput
+}
+
+input UserCreateWithoutEventsInput {
+  role: Role
+  name: String!
+  email: String!
+  password: String!
+  enabled: Boolean
+  musicians: MusicianCreateManyWithoutUserInput
+  bands: BandCreateManyWithoutFollowersInput
+}
+
+input UserCreateWithoutMusiciansInput {
+  role: Role
+  name: String!
+  email: String!
+  password: String!
+  enabled: Boolean
+  bands: BandCreateManyWithoutFollowersInput
+  events: EventCreateManyWithoutAttendeesInput
+}
+
+"""An edge in a connection."""
+type UserEdge {
+  """The item at the end of the edge."""
+  node: User!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum UserOrderByInput {
+  id_ASC
+  id_DESC
+  role_ASC
+  role_DESC
+  name_ASC
+  name_DESC
+  email_ASC
+  email_DESC
+  password_ASC
+  password_DESC
+  enabled_ASC
+  enabled_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type UserPreviousValues {
+  id: ID!
+  role: Role!
+  name: String!
+  email: String!
+  password: String!
+  enabled: Boolean!
+  updatedAt: DateTime!
+  createdAt: DateTime!
+}
+
+input UserScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  role: Role
+
+  """All values that are not equal to given value."""
+  role_not: Role
+
+  """All values that are contained in given list."""
+  role_in: [Role!]
+
+  """All values that are not contained in given list."""
+  role_not_in: [Role!]
   name: String
 
   """All values that are not equal to given value."""
@@ -413,7 +2591,676 @@ input UserWhereInput {
   createdAt_gte: DateTime
 }
 
+type UserSubscriptionPayload {
+  mutation: MutationType!
+  node: User
+  updatedFields: [String!]
+  previousValues: UserPreviousValues
+}
+
+input UserSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: UserWhereInput
+}
+
+input UserUpdateInput {
+  role: Role
+  name: String
+  email: String
+  password: String
+  enabled: Boolean
+  musicians: MusicianUpdateManyWithoutUserInput
+  bands: BandUpdateManyWithoutFollowersInput
+  events: EventUpdateManyWithoutAttendeesInput
+}
+
+input UserUpdateManyDataInput {
+  role: Role
+  name: String
+  email: String
+  password: String
+  enabled: Boolean
+}
+
+input UserUpdateManyMutationInput {
+  role: Role
+  name: String
+  email: String
+  password: String
+  enabled: Boolean
+}
+
+input UserUpdateManyWithoutBandsInput {
+  create: [UserCreateWithoutBandsInput!]
+  connect: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  delete: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutBandsInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+  deleteMany: [UserScalarWhereInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutBandsInput!]
+}
+
+input UserUpdateManyWithoutEventsInput {
+  create: [UserCreateWithoutEventsInput!]
+  connect: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  delete: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutEventsInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+  deleteMany: [UserScalarWhereInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutEventsInput!]
+}
+
+input UserUpdateManyWithWhereNestedInput {
+  where: UserScalarWhereInput!
+  data: UserUpdateManyDataInput!
+}
+
+input UserUpdateOneWithoutMusiciansInput {
+  create: UserCreateWithoutMusiciansInput
+  connect: UserWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: UserUpdateWithoutMusiciansDataInput
+  upsert: UserUpsertWithoutMusiciansInput
+}
+
+input UserUpdateWithoutBandsDataInput {
+  role: Role
+  name: String
+  email: String
+  password: String
+  enabled: Boolean
+  musicians: MusicianUpdateManyWithoutUserInput
+  events: EventUpdateManyWithoutAttendeesInput
+}
+
+input UserUpdateWithoutEventsDataInput {
+  role: Role
+  name: String
+  email: String
+  password: String
+  enabled: Boolean
+  musicians: MusicianUpdateManyWithoutUserInput
+  bands: BandUpdateManyWithoutFollowersInput
+}
+
+input UserUpdateWithoutMusiciansDataInput {
+  role: Role
+  name: String
+  email: String
+  password: String
+  enabled: Boolean
+  bands: BandUpdateManyWithoutFollowersInput
+  events: EventUpdateManyWithoutAttendeesInput
+}
+
+input UserUpdateWithWhereUniqueWithoutBandsInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateWithoutBandsDataInput!
+}
+
+input UserUpdateWithWhereUniqueWithoutEventsInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateWithoutEventsDataInput!
+}
+
+input UserUpsertWithoutMusiciansInput {
+  update: UserUpdateWithoutMusiciansDataInput!
+  create: UserCreateWithoutMusiciansInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutBandsInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateWithoutBandsDataInput!
+  create: UserCreateWithoutBandsInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutEventsInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateWithoutEventsDataInput!
+  create: UserCreateWithoutEventsInput!
+}
+
+input UserWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  role: Role
+
+  """All values that are not equal to given value."""
+  role_not: Role
+
+  """All values that are contained in given list."""
+  role_in: [Role!]
+
+  """All values that are not contained in given list."""
+  role_not_in: [Role!]
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  email: String
+
+  """All values that are not equal to given value."""
+  email_not: String
+
+  """All values that are contained in given list."""
+  email_in: [String!]
+
+  """All values that are not contained in given list."""
+  email_not_in: [String!]
+
+  """All values less than the given value."""
+  email_lt: String
+
+  """All values less than or equal the given value."""
+  email_lte: String
+
+  """All values greater than the given value."""
+  email_gt: String
+
+  """All values greater than or equal the given value."""
+  email_gte: String
+
+  """All values containing the given string."""
+  email_contains: String
+
+  """All values not containing the given string."""
+  email_not_contains: String
+
+  """All values starting with the given string."""
+  email_starts_with: String
+
+  """All values not starting with the given string."""
+  email_not_starts_with: String
+
+  """All values ending with the given string."""
+  email_ends_with: String
+
+  """All values not ending with the given string."""
+  email_not_ends_with: String
+  password: String
+
+  """All values that are not equal to given value."""
+  password_not: String
+
+  """All values that are contained in given list."""
+  password_in: [String!]
+
+  """All values that are not contained in given list."""
+  password_not_in: [String!]
+
+  """All values less than the given value."""
+  password_lt: String
+
+  """All values less than or equal the given value."""
+  password_lte: String
+
+  """All values greater than the given value."""
+  password_gt: String
+
+  """All values greater than or equal the given value."""
+  password_gte: String
+
+  """All values containing the given string."""
+  password_contains: String
+
+  """All values not containing the given string."""
+  password_not_contains: String
+
+  """All values starting with the given string."""
+  password_starts_with: String
+
+  """All values not starting with the given string."""
+  password_not_starts_with: String
+
+  """All values ending with the given string."""
+  password_ends_with: String
+
+  """All values not ending with the given string."""
+  password_not_ends_with: String
+  enabled: Boolean
+
+  """All values that are not equal to given value."""
+  enabled_not: Boolean
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  musicians_every: MusicianWhereInput
+  musicians_some: MusicianWhereInput
+  musicians_none: MusicianWhereInput
+  bands_every: BandWhereInput
+  bands_some: BandWhereInput
+  bands_none: BandWhereInput
+  events_every: EventWhereInput
+  events_some: EventWhereInput
+  events_none: EventWhereInput
+}
+
 input UserWhereUniqueInput {
   id: ID
   email: String
+}
+
+type Venue implements Node {
+  id: ID!
+  name: String!
+  location: Location!
+  address: String!
+  events(where: EventWhereInput, orderBy: EventOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Event!]
+}
+
+"""A connection to a list of items."""
+type VenueConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [VenueEdge]!
+  aggregate: AggregateVenue!
+}
+
+input VenueCreateInput {
+  name: String!
+  address: String!
+  location: LocationCreateOneInput!
+  events: EventCreateManyWithoutVenueInput
+}
+
+input VenueCreateOneWithoutEventsInput {
+  create: VenueCreateWithoutEventsInput
+  connect: VenueWhereUniqueInput
+}
+
+input VenueCreateWithoutEventsInput {
+  name: String!
+  address: String!
+  location: LocationCreateOneInput!
+}
+
+"""An edge in a connection."""
+type VenueEdge {
+  """The item at the end of the edge."""
+  node: Venue!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum VenueOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  address_ASC
+  address_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type VenuePreviousValues {
+  id: ID!
+  name: String!
+  address: String!
+}
+
+type VenueSubscriptionPayload {
+  mutation: MutationType!
+  node: Venue
+  updatedFields: [String!]
+  previousValues: VenuePreviousValues
+}
+
+input VenueSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [VenueSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [VenueSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [VenueSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: VenueWhereInput
+}
+
+input VenueUpdateInput {
+  name: String
+  address: String
+  location: LocationUpdateOneRequiredInput
+  events: EventUpdateManyWithoutVenueInput
+}
+
+input VenueUpdateManyMutationInput {
+  name: String
+  address: String
+}
+
+input VenueUpdateOneRequiredWithoutEventsInput {
+  create: VenueCreateWithoutEventsInput
+  connect: VenueWhereUniqueInput
+  update: VenueUpdateWithoutEventsDataInput
+  upsert: VenueUpsertWithoutEventsInput
+}
+
+input VenueUpdateWithoutEventsDataInput {
+  name: String
+  address: String
+  location: LocationUpdateOneRequiredInput
+}
+
+input VenueUpsertWithoutEventsInput {
+  update: VenueUpdateWithoutEventsDataInput!
+  create: VenueCreateWithoutEventsInput!
+}
+
+input VenueWhereInput {
+  """Logical AND on all given filters."""
+  AND: [VenueWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [VenueWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [VenueWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  address: String
+
+  """All values that are not equal to given value."""
+  address_not: String
+
+  """All values that are contained in given list."""
+  address_in: [String!]
+
+  """All values that are not contained in given list."""
+  address_not_in: [String!]
+
+  """All values less than the given value."""
+  address_lt: String
+
+  """All values less than or equal the given value."""
+  address_lte: String
+
+  """All values greater than the given value."""
+  address_gt: String
+
+  """All values greater than or equal the given value."""
+  address_gte: String
+
+  """All values containing the given string."""
+  address_contains: String
+
+  """All values not containing the given string."""
+  address_not_contains: String
+
+  """All values starting with the given string."""
+  address_starts_with: String
+
+  """All values not starting with the given string."""
+  address_not_starts_with: String
+
+  """All values ending with the given string."""
+  address_ends_with: String
+
+  """All values not ending with the given string."""
+  address_not_ends_with: String
+  location: LocationWhereInput
+  events_every: EventWhereInput
+  events_some: EventWhereInput
+  events_none: EventWhereInput
+}
+
+input VenueWhereUniqueInput {
+  id: ID
 }
