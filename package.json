@@ -8,6 +8,7 @@
     "heroku-postbuild": "babel src --out-dir dist --copy-files",
     "deploy-dev": "prisma deploy prisma -e config/dev.env",
     "reset-dev": "prisma reset prisma -e config/dev.env",
+    "load": "env-cmd ./config/dev.env node src/load.js",
     "dev": "env-cmd ./config/dev.env nodemon src/index.js --ext js,graphql --exec babel-node",
     "deploy-test": "prisma deploy prisma -e config/test.env",
     "reset-test": "prisma reset prisma -e config/test.env",

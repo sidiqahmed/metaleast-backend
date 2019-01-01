@@ -16,7 +16,6 @@ import {
   deleteUser,
   getProfile
 } from './operations/User'
-import gql from 'graphql-tag'
 
 const client = getClient()
 
