@@ -13,6 +13,7 @@ import {
   getUsers,
   login,
   updateUser,
+  deleteUser,
   getProfile
 } from './operations/User'
 import gql from 'graphql-tag'
@@ -371,6 +372,91 @@ describe('Updating user as superadmin', () => {
     expect(updatedUser.name).toBe('Test Update')
     expect(updatedUser.email).toBe('test@update.com')
     expect(updatedUser.role).toBe('WRITER')
+  })
+})
+
+describe('Deleting own profile', () => {
+  const commentator = users.find((user) => user.input.role === 'COMMENTATOR')
+  const writer = users.find((user) => user.input.role === 'WRITER')
+
+  test('Should delete own profile', async () => {
+    const client = getClient(commentator.jwt)
+
+    await client.mutate({ mutation: deleteUser })
+
+    const userIsNotDeleted = await prisma.exists.User({
+      id: commentator.data.id
+    })
+
+    expect(userIsNotDeleted).toBe(false)
+  })
+
+  test('Should not delete other profile', async () => {
+    const client = getClient(commentator.jwt)
+    const variables = {
+      id: writer.data.id
+    }
+
+    await expect(
+      client.mutate({ mutation: deleteUser, variables })
+    ).rejects.toThrow()
+  })
+})
+
+describe('Deleting as admin', () => {
+  const admin = users.find((user) => user.input.role === 'ADMIN')
+  const commentator = users.find((user) => user.input.role === 'COMMENTATOR')
+
+  test('Should delete user', async () => {
+    const client = getClient(admin.jwt)
+    const variables = {
+      id: commentator.data.id
+    }
+
+    await client.mutate({ mutation: deleteUser, variables })
+
+    const userIsNotDeleted = await prisma.exists.User({
+      id: commentator.data.id
+    })
+
+    expect(userIsNotDeleted).toBe(false)
+  })
+
+  test('Should not delete admin', async () => {
+    const client = getClient(admin.jwt)
+    const variables = {
+      id: admin.data.id
+    }
+
+    await expect(
+      client.mutate({ mutation: deleteUser, variables })
+    ).rejects.toThrow()
+  })
+})
+
+describe('Deleting as superadmin', () => {
+  const superadmin = users.find((user) => user.input.role === 'SUPERADMIN')
+  const admin = users.find((user) => user.input.role === 'ADMIN')
+
+  test('Should delete admin', async () => {
+    const client = getClient(superadmin.jwt)
+    const variables = {
+      id: admin.data.id
+    }
+
+    await client.mutate({ mutation: deleteUser, variables })
+
+    const userIsNotDeleted = await prisma.exists.User({
+      id: admin.data.id
+    })
+
+    expect(userIsNotDeleted).toBe(false)
+  })
+
+  test('Should not delete themself', async () => {
+    const client = getClient(superadmin.jwt)
+
+    await expect(client.mutate({ mutation: deleteUser })).rejects.toThrow()
   })
 })
 

@@ -54,9 +54,15 @@ const updateUser = gql`
       data: $data
       password: $password
     ) {
-      name
-      email
-      role
+      id
+    }
+  }
+`
+
+const deleteUser = gql`
+  mutation($id: ID) {
+    deleteUser(id: $id) {
+      id
     }
   }
 `
@@ -71,4 +77,12 @@ const getProfile = gql`
   }
 `
 
-export { createUser, confirmEmail, login, getUsers, updateUser, getProfile }
+export {
+  createUser,
+  confirmEmail,
+  login,
+  getUsers,
+  updateUser,
+  deleteUser,
+  getProfile
+}
