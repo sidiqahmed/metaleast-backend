@@ -29,7 +29,7 @@ const sendValidationEmail = ({ name, email }, token) => {
   // send mail with defined transport object
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      throw new Error('The email has not been sent!')
+      throw new Error(`The email has not been sent! (${error})`)
     }
     console.log(`Email sent to ${mailOptions.to}`)
   })

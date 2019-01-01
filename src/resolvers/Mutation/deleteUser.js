@@ -3,7 +3,7 @@ import getUserId from '../../utils/getUserId'
 const deleteUser = async (parent, { id }, { prisma, request }, info) => {
   // Get user ID from token (will throw an error if unauthenticated)
   const userId = getUserId(request)
-  const user = await prisma.query.user({ where: { id: userId } })
+  const connectedUser = await prisma.query.user({ where: { id: userId } })
 
   // If id is not given, delete connected user
   if (!id) {
@@ -18,7 +18,8 @@ const deleteUser = async (parent, { id }, { prisma, request }, info) => {
   }
 
   // If id is given and connected user is admin, delete given user
-  if (['ADMIN', 'SUPERADMIN'].indexOf(user.role) > -1) {
+  const isAdmin = ['ADMIN', 'SUPERADMIN'].indexOf(connectedUser.role) > -1
+  if (isAdmin) {
     return prisma.mutation.deleteUser(
       {
         where: {
