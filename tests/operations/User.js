@@ -41,6 +41,26 @@ const login = gql`
   }
 `
 
+const updateUser = gql`
+  mutation(
+    $id: ID
+    $currentPassword: String!
+    $data: UpdateUserInput
+    $password: CreatePasswordInput
+  ) {
+    updateUser(
+      id: $id
+      currentPassword: $currentPassword
+      data: $data
+      password: $password
+    ) {
+      name
+      email
+      role
+    }
+  }
+`
+
 const getProfile = gql`
   query {
     me {
@@ -51,4 +71,4 @@ const getProfile = gql`
   }
 `
 
-export { createUser, confirmEmail, login, getUsers, getProfile }
+export { createUser, confirmEmail, login, getUsers, updateUser, getProfile }

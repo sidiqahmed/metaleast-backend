@@ -12,6 +12,7 @@ import {
   confirmEmail,
   getUsers,
   login,
+  updateUser,
   getProfile
 } from './operations/User'
 import gql from 'graphql-tag'
@@ -157,6 +158,219 @@ describe('User login', () => {
     await expect(
       client.mutate({ mutation: login, variables })
     ).rejects.toThrow()
+  })
+})
+
+describe('Updating own profile', () => {
+  const commentator = users.find((user) => user.input.role === 'COMMENTATOR')
+  const writer = users.find((user) => user.input.role === 'WRITER')
+
+  test('Should update own profile if no id provided', async () => {
+    const client = getClient(commentator.jwt)
+    const variables = {
+      currentPassword: commentator.input.password,
+      data: {
+        name: 'Test Update',
+        email: 'test@update.com'
+      }
+    }
+
+    await client.mutate({ mutation: updateUser, variables })
+    const updatedUser = await prisma.query.user({
+      where: { id: commentator.data.id }
+    })
+
+    expect(updatedUser.name).toBe('Test Update')
+    expect(updatedUser.email).toBe('test@update.com')
+  })
+
+  test('Should not update other profiles', async () => {
+    const client = getClient(commentator.jwt)
+    const variables = {
+      id: writer.data.id,
+      currentPassword: commentator.input.password,
+      data: {
+        name: 'Test Update',
+        email: 'test@update.com'
+      }
+    }
+
+    await expect(
+      client.mutate({ mutation: updateUser, variables })
+    ).rejects.toThrow()
+  })
+
+  test('Should not update if password is invalid', async () => {
+    const client = getClient(commentator.jwt)
+    const variables = {
+      currentPassword: commentator.input.password.slice(1),
+      data: {
+        name: 'Test Update',
+        email: 'test@update.com'
+      }
+    }
+
+    await expect(
+      client.mutate({ mutation: updateUser, variables })
+    ).rejects.toThrow()
+  })
+
+  test('Should update own password', async () => {
+    const client = getClient(commentator.jwt)
+    const variables = {
+      currentPassword: commentator.input.password,
+      password: {
+        newPassword: 'fef569sefesf5!',
+        retypedPassword: 'fef569sefesf5!'
+      }
+    }
+
+    await client.mutate({ mutation: updateUser, variables })
+    const updatedUser = await prisma.query.user({
+      where: { id: commentator.data.id }
+    })
+
+    const passwordMatch = bcrypt.compareSync(
+      'fef569sefesf5!',
+      updatedUser.password
+    )
+
+    expect(passwordMatch).toBe(true)
+  })
+
+  test('Should not update role', async () => {
+    const client = getClient(commentator.jwt)
+    const variables = {
+      currentPassword: commentator.input.password,
+      data: {
+        role: 'WRITER'
+      }
+    }
+
+    await client.mutate({ mutation: updateUser, variables })
+    const updatedUser = await prisma.query.user({
+      where: { id: commentator.data.id }
+    })
+
+    expect(updatedUser.role).toBe(commentator.input.role)
+  })
+})
+
+describe('Updating user as admin', () => {
+  const admin = users.find((user) => user.input.role === 'ADMIN')
+  const commentator = users.find((user) => user.input.role === 'COMMENTATOR')
+
+  test('Should update a user', async () => {
+    const client = getClient(admin.jwt)
+    const variables = {
+      id: commentator.data.id,
+      currentPassword: admin.input.password,
+      data: {
+        name: 'Test Update',
+        email: 'test@update.com',
+        role: 'WRITER'
+      }
+    }
+
+    await client.mutate({ mutation: updateUser, variables })
+    const updatedUser = await prisma.query.user({
+      where: { id: commentator.data.id }
+    })
+
+    expect(updatedUser.name).toBe('Test Update')
+    expect(updatedUser.email).toBe('test@update.com')
+    expect(updatedUser.role).toBe('WRITER')
+  })
+
+  test('Should not update a user password', async () => {
+    const client = getClient(admin.jwt)
+    const variables = {
+      id: commentator.data.id,
+      currentPassword: admin.input.password,
+      password: {
+        newPassword: 'sdfd585sfd2sdf3!',
+        retypedPassword: 'sdfd585sfd2sdf3!'
+      }
+    }
+
+    await client.mutate({ mutation: updateUser, variables })
+    const updatedUser = await prisma.query.user({
+      where: { id: commentator.data.id }
+    })
+
+    const passwordMatch = bcrypt.compareSync(
+      commentator.input.password,
+      updatedUser.password
+    )
+
+    expect(passwordMatch).toBe(true)
+  })
+
+  test('Should not update admin or superadmin', async () => {
+    const client = getClient(admin.jwt)
+    const variables = {
+      id: admin.data.id,
+      currentPassword: admin.input.password,
+      data: {
+        name: 'Cannot change',
+        email: 'cannot@change.org',
+        role: 'WRITER'
+      }
+    }
+
+    await client.mutate({ mutation: updateUser, variables })
+    const updatedUser = await prisma.query.user({
+      where: { id: admin.data.id }
+    })
+
+    expect(updatedUser.name).toBe(admin.input.name)
+    expect(updatedUser.email).toBe(admin.input.email)
+    expect(updatedUser.role).toBe(admin.input.role)
+  })
+
+  test('Should not give admin rights', async () => {
+    const client = getClient(admin.jwt)
+    const variables = {
+      id: commentator.data.id,
+      currentPassword: admin.input.password,
+      data: {
+        role: 'ADMIN'
+      }
+    }
+
+    await client.mutate({ mutation: updateUser, variables })
+    const updatedUser = await prisma.query.user({
+      where: { id: commentator.data.id }
+    })
+
+    expect(updatedUser.role).toBe(commentator.input.role)
+  })
+})
+
+describe('Updating user as superadmin', () => {
+  const superadmin = users.find((user) => user.input.role === 'SUPERADMIN')
+  const admin = users.find((user) => user.input.role === 'ADMIN')
+
+  test('Should update an admin', async () => {
+    const client = getClient(superadmin.jwt)
+    const variables = {
+      id: admin.data.id,
+      currentPassword: superadmin.input.password,
+      data: {
+        name: 'Test Update',
+        email: 'test@update.com',
+        role: 'WRITER'
+      }
+    }
+
+    await client.mutate({ mutation: updateUser, variables })
+    const updatedUser = await prisma.query.user({
+      where: { id: admin.data.id }
+    })
+
+    expect(updatedUser.name).toBe('Test Update')
+    expect(updatedUser.email).toBe('test@update.com')
+    expect(updatedUser.role).toBe('WRITER')
   })
 })
 
