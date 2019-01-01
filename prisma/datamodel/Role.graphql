@@ -3,5 +3,4 @@ enum Role {
   ADMIN
   WRITER
   COMMENTATOR
-  BANNED
 }

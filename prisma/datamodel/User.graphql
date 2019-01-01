@@ -2,6 +2,7 @@ type User {
   # main definition
   id: ID! @unique
   role: Role! @default(value: "COMMENTATOR")
+  banned: Banned @relation(name: "UserIsBanned")
   name: String!
   email: String! @unique
   password: String!

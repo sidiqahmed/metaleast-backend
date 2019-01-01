@@ -1,7 +1,11 @@
 # source: http://localhost:4466/backend/dev
-# timestamp: Sun Dec 30 2018 09:54:52 GMT+0100 (Central European Standard Time)
+# timestamp: Tue Jan 01 2019 11:37:44 GMT+0100 (Central European Standard Time)
 
 type AggregateBand {
+  count: Int!
+}
+
+type AggregateBanned {
   count: Int!
 }
 
@@ -494,6 +498,254 @@ input BandWhereInput {
 }
 
 input BandWhereUniqueInput {
+  id: ID
+}
+
+type Banned implements Node {
+  id: ID!
+  user: User!
+  comment: String
+  debanned: DateTime!
+}
+
+"""A connection to a list of items."""
+type BannedConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [BannedEdge]!
+  aggregate: AggregateBanned!
+}
+
+input BannedCreateInput {
+  comment: String
+  debanned: DateTime!
+  user: UserCreateOneWithoutBannedInput!
+}
+
+input BannedCreateOneWithoutUserInput {
+  create: BannedCreateWithoutUserInput
+  connect: BannedWhereUniqueInput
+}
+
+input BannedCreateWithoutUserInput {
+  comment: String
+  debanned: DateTime!
+}
+
+"""An edge in a connection."""
+type BannedEdge {
+  """The item at the end of the edge."""
+  node: Banned!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum BannedOrderByInput {
+  id_ASC
+  id_DESC
+  comment_ASC
+  comment_DESC
+  debanned_ASC
+  debanned_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type BannedPreviousValues {
+  id: ID!
+  comment: String
+  debanned: DateTime!
+}
+
+type BannedSubscriptionPayload {
+  mutation: MutationType!
+  node: Banned
+  updatedFields: [String!]
+  previousValues: BannedPreviousValues
+}
+
+input BannedSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [BannedSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [BannedSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [BannedSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: BannedWhereInput
+}
+
+input BannedUpdateInput {
+  comment: String
+  debanned: DateTime
+  user: UserUpdateOneRequiredWithoutBannedInput
+}
+
+input BannedUpdateManyMutationInput {
+  comment: String
+  debanned: DateTime
+}
+
+input BannedUpdateOneWithoutUserInput {
+  create: BannedCreateWithoutUserInput
+  connect: BannedWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: BannedUpdateWithoutUserDataInput
+  upsert: BannedUpsertWithoutUserInput
+}
+
+input BannedUpdateWithoutUserDataInput {
+  comment: String
+  debanned: DateTime
+}
+
+input BannedUpsertWithoutUserInput {
+  update: BannedUpdateWithoutUserDataInput!
+  create: BannedCreateWithoutUserInput!
+}
+
+input BannedWhereInput {
+  """Logical AND on all given filters."""
+  AND: [BannedWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [BannedWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [BannedWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  comment: String
+
+  """All values that are not equal to given value."""
+  comment_not: String
+
+  """All values that are contained in given list."""
+  comment_in: [String!]
+
+  """All values that are not contained in given list."""
+  comment_not_in: [String!]
+
+  """All values less than the given value."""
+  comment_lt: String
+
+  """All values less than or equal the given value."""
+  comment_lte: String
+
+  """All values greater than the given value."""
+  comment_gt: String
+
+  """All values greater than or equal the given value."""
+  comment_gte: String
+
+  """All values containing the given string."""
+  comment_contains: String
+
+  """All values not containing the given string."""
+  comment_not_contains: String
+
+  """All values starting with the given string."""
+  comment_starts_with: String
+
+  """All values not starting with the given string."""
+  comment_not_starts_with: String
+
+  """All values ending with the given string."""
+  comment_ends_with: String
+
+  """All values not ending with the given string."""
+  comment_not_ends_with: String
+  debanned: DateTime
+
+  """All values that are not equal to given value."""
+  debanned_not: DateTime
+
+  """All values that are contained in given list."""
+  debanned_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  debanned_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  debanned_lt: DateTime
+
+  """All values less than or equal the given value."""
+  debanned_lte: DateTime
+
+  """All values greater than the given value."""
+  debanned_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  debanned_gte: DateTime
+  user: UserWhereInput
+}
+
+input BannedWhereUniqueInput {
   id: ID
 }
 
@@ -1782,6 +2034,7 @@ input MusicianWhereUniqueInput {
 
 type Mutation {
   createUser(data: UserCreateInput!): User!
+  createBanned(data: BannedCreateInput!): Banned!
   createBand(data: BandCreateInput!): Band!
   createMusician(data: MusicianCreateInput!): Musician!
   createStyle(data: StyleCreateInput!): Style!
@@ -1790,6 +2043,7 @@ type Mutation {
   createLocation(data: LocationCreateInput!): Location!
   createInstrument(data: InstrumentCreateInput!): Instrument!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  updateBanned(data: BannedUpdateInput!, where: BannedWhereUniqueInput!): Banned
   updateBand(data: BandUpdateInput!, where: BandWhereUniqueInput!): Band
   updateMusician(data: MusicianUpdateInput!, where: MusicianWhereUniqueInput!): Musician
   updateStyle(data: StyleUpdateInput!, where: StyleWhereUniqueInput!): Style
@@ -1798,6 +2052,7 @@ type Mutation {
   updateLocation(data: LocationUpdateInput!, where: LocationWhereUniqueInput!): Location
   updateInstrument(data: InstrumentUpdateInput!, where: InstrumentWhereUniqueInput!): Instrument
   deleteUser(where: UserWhereUniqueInput!): User
+  deleteBanned(where: BannedWhereUniqueInput!): Banned
   deleteBand(where: BandWhereUniqueInput!): Band
   deleteMusician(where: MusicianWhereUniqueInput!): Musician
   deleteStyle(where: StyleWhereUniqueInput!): Style
@@ -1806,6 +2061,7 @@ type Mutation {
   deleteLocation(where: LocationWhereUniqueInput!): Location
   deleteInstrument(where: InstrumentWhereUniqueInput!): Instrument
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  upsertBanned(where: BannedWhereUniqueInput!, create: BannedCreateInput!, update: BannedUpdateInput!): Banned!
   upsertBand(where: BandWhereUniqueInput!, create: BandCreateInput!, update: BandUpdateInput!): Band!
   upsertMusician(where: MusicianWhereUniqueInput!, create: MusicianCreateInput!, update: MusicianUpdateInput!): Musician!
   upsertStyle(where: StyleWhereUniqueInput!, create: StyleCreateInput!, update: StyleUpdateInput!): Style!
@@ -1814,6 +2070,7 @@ type Mutation {
   upsertLocation(where: LocationWhereUniqueInput!, create: LocationCreateInput!, update: LocationUpdateInput!): Location!
   upsertInstrument(where: InstrumentWhereUniqueInput!, create: InstrumentCreateInput!, update: InstrumentUpdateInput!): Instrument!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  updateManyBanneds(data: BannedUpdateManyMutationInput!, where: BannedWhereInput): BatchPayload!
   updateManyBands(data: BandUpdateManyMutationInput!, where: BandWhereInput): BatchPayload!
   updateManyMusicians(data: MusicianUpdateManyMutationInput!, where: MusicianWhereInput): BatchPayload!
   updateManyStyles(data: StyleUpdateManyMutationInput!, where: StyleWhereInput): BatchPayload!
@@ -1822,6 +2079,7 @@ type Mutation {
   updateManyLocations(data: LocationUpdateManyMutationInput!, where: LocationWhereInput): BatchPayload!
   updateManyInstruments(data: InstrumentUpdateManyMutationInput!, where: InstrumentWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
+  deleteManyBanneds(where: BannedWhereInput): BatchPayload!
   deleteManyBands(where: BandWhereInput): BatchPayload!
   deleteManyMusicians(where: MusicianWhereInput): BatchPayload!
   deleteManyStyles(where: StyleWhereInput): BatchPayload!
@@ -1865,6 +2123,7 @@ enum PrismaDatabase {
 
 type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  banneds(where: BannedWhereInput, orderBy: BannedOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Banned]!
   bands(where: BandWhereInput, orderBy: BandOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Band]!
   musicians(where: MusicianWhereInput, orderBy: MusicianOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Musician]!
   styles(where: StyleWhereInput, orderBy: StyleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Style]!
@@ -1873,6 +2132,7 @@ type Query {
   locations(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Location]!
   instruments(where: InstrumentWhereInput, orderBy: InstrumentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Instrument]!
   user(where: UserWhereUniqueInput!): User
+  banned(where: BannedWhereUniqueInput!): Banned
   band(where: BandWhereUniqueInput!): Band
   musician(where: MusicianWhereUniqueInput!): Musician
   style(where: StyleWhereUniqueInput!): Style
@@ -1881,6 +2141,7 @@ type Query {
   location(where: LocationWhereUniqueInput!): Location
   instrument(where: InstrumentWhereUniqueInput!): Instrument
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  bannedsConnection(where: BannedWhereInput, orderBy: BannedOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BannedConnection!
   bandsConnection(where: BandWhereInput, orderBy: BandOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BandConnection!
   musiciansConnection(where: MusicianWhereInput, orderBy: MusicianOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MusicianConnection!
   stylesConnection(where: StyleWhereInput, orderBy: StyleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): StyleConnection!
@@ -1901,7 +2162,6 @@ enum Role {
   ADMIN
   WRITER
   COMMENTATOR
-  BANNED
 }
 
 type Style implements Node {
@@ -2234,6 +2494,7 @@ input StyleWhereUniqueInput {
 
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+  banned(where: BannedSubscriptionWhereInput): BannedSubscriptionPayload
   band(where: BandSubscriptionWhereInput): BandSubscriptionPayload
   musician(where: MusicianSubscriptionWhereInput): MusicianSubscriptionPayload
   style(where: StyleSubscriptionWhereInput): StyleSubscriptionPayload
@@ -2246,6 +2507,7 @@ type Subscription {
 type User implements Node {
   id: ID!
   role: Role!
+  banned: Banned
   name: String!
   email: String!
   password: String!
@@ -2273,6 +2535,7 @@ input UserCreateInput {
   email: String!
   password: String!
   enabled: Boolean
+  banned: BannedCreateOneWithoutUserInput
   musicians: MusicianCreateManyWithoutUserInput
   bands: BandCreateManyWithoutFollowersInput
   events: EventCreateManyWithoutAttendeesInput
@@ -2288,6 +2551,11 @@ input UserCreateManyWithoutEventsInput {
   connect: [UserWhereUniqueInput!]
 }
 
+input UserCreateOneWithoutBannedInput {
+  create: UserCreateWithoutBannedInput
+  connect: UserWhereUniqueInput
+}
+
 input UserCreateOneWithoutMusiciansInput {
   create: UserCreateWithoutMusiciansInput
   connect: UserWhereUniqueInput
@@ -2299,7 +2567,19 @@ input UserCreateWithoutBandsInput {
   email: String!
   password: String!
   enabled: Boolean
+  banned: BannedCreateOneWithoutUserInput
   musicians: MusicianCreateManyWithoutUserInput
+  events: EventCreateManyWithoutAttendeesInput
+}
+
+input UserCreateWithoutBannedInput {
+  role: Role
+  name: String!
+  email: String!
+  password: String!
+  enabled: Boolean
+  musicians: MusicianCreateManyWithoutUserInput
+  bands: BandCreateManyWithoutFollowersInput
   events: EventCreateManyWithoutAttendeesInput
 }
 
@@ -2309,6 +2589,7 @@ input UserCreateWithoutEventsInput {
   email: String!
   password: String!
   enabled: Boolean
+  banned: BannedCreateOneWithoutUserInput
   musicians: MusicianCreateManyWithoutUserInput
   bands: BandCreateManyWithoutFollowersInput
 }
@@ -2319,6 +2600,7 @@ input UserCreateWithoutMusiciansInput {
   email: String!
   password: String!
   enabled: Boolean
+  banned: BannedCreateOneWithoutUserInput
   bands: BandCreateManyWithoutFollowersInput
   events: EventCreateManyWithoutAttendeesInput
 }
@@ -2636,6 +2918,7 @@ input UserUpdateInput {
   email: String
   password: String
   enabled: Boolean
+  banned: BannedUpdateOneWithoutUserInput
   musicians: MusicianUpdateManyWithoutUserInput
   bands: BandUpdateManyWithoutFollowersInput
   events: EventUpdateManyWithoutAttendeesInput
@@ -2684,6 +2967,13 @@ input UserUpdateManyWithWhereNestedInput {
   data: UserUpdateManyDataInput!
 }
 
+input UserUpdateOneRequiredWithoutBannedInput {
+  create: UserCreateWithoutBannedInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutBannedDataInput
+  upsert: UserUpsertWithoutBannedInput
+}
+
 input UserUpdateOneWithoutMusiciansInput {
   create: UserCreateWithoutMusiciansInput
   connect: UserWhereUniqueInput
@@ -2699,7 +2989,19 @@ input UserUpdateWithoutBandsDataInput {
   email: String
   password: String
   enabled: Boolean
+  banned: BannedUpdateOneWithoutUserInput
   musicians: MusicianUpdateManyWithoutUserInput
+  events: EventUpdateManyWithoutAttendeesInput
+}
+
+input UserUpdateWithoutBannedDataInput {
+  role: Role
+  name: String
+  email: String
+  password: String
+  enabled: Boolean
+  musicians: MusicianUpdateManyWithoutUserInput
+  bands: BandUpdateManyWithoutFollowersInput
   events: EventUpdateManyWithoutAttendeesInput
 }
 
@@ -2709,6 +3011,7 @@ input UserUpdateWithoutEventsDataInput {
   email: String
   password: String
   enabled: Boolean
+  banned: BannedUpdateOneWithoutUserInput
   musicians: MusicianUpdateManyWithoutUserInput
   bands: BandUpdateManyWithoutFollowersInput
 }
@@ -2719,6 +3022,7 @@ input UserUpdateWithoutMusiciansDataInput {
   email: String
   password: String
   enabled: Boolean
+  banned: BannedUpdateOneWithoutUserInput
   bands: BandUpdateManyWithoutFollowersInput
   events: EventUpdateManyWithoutAttendeesInput
 }
@@ -2731,6 +3035,11 @@ input UserUpdateWithWhereUniqueWithoutBandsInput {
 input UserUpdateWithWhereUniqueWithoutEventsInput {
   where: UserWhereUniqueInput!
   data: UserUpdateWithoutEventsDataInput!
+}
+
+input UserUpsertWithoutBannedInput {
+  update: UserUpdateWithoutBannedDataInput!
+  create: UserCreateWithoutBannedInput!
 }
 
 input UserUpsertWithoutMusiciansInput {
@@ -2977,6 +3286,7 @@ input UserWhereInput {
 
   """All values greater than or equal the given value."""
   createdAt_gte: DateTime
+  banned: BannedWhereInput
   musicians_every: MusicianWhereInput
   musicians_some: MusicianWhereInput
   musicians_none: MusicianWhereInput

@@ -1,0 +1,6 @@
+type Banned {
+  id: ID! @unique
+  user: User! @relation(name: "UserIsBanned")
+  comment: String
+  debanned: DateTime!
+}

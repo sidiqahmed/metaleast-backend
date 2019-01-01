@@ -3,6 +3,7 @@ secret: ${env:PRISMA_SECRET}
 datamodel:
   - datamodel/User.graphql
   - datamodel/Role.graphql
+  - datamodel/Banned.graphql
   - datamodel/Band.graphql
   - datamodel/Musician.graphql
   - datamodel/Instrument.graphql
