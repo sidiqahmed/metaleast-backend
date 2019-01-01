@@ -14,19 +14,16 @@ import {
   login,
   getProfile
 } from './operations/User'
+import gql from 'graphql-tag'
 
 const client = getClient()
 
 beforeEach(seedDatabase)
 
 test('Should create a new user', async () => {
-  const variables = {
-    data: newUser
-  }
-
   const response = await client.mutate({
     mutation: createUser,
-    variables
+    variables: newUser
   })
 
   const userId = response.data.createUser.id
@@ -38,14 +35,15 @@ test('Should create a new user', async () => {
 
   // Check values stores in db
   const passwordMatch = bcrypt.compareSync(
-    newUser.password,
+    newUser.password.newPassword,
     createdUser.password
   )
 
-  expect(createdUser.name).toBe(newUser.name)
-  expect(createdUser.email).toBe(newUser.email)
+  expect(createdUser.name).toBe(newUser.data.name)
+  expect(createdUser.email).toBe(newUser.data.email)
   expect(passwordMatch).toBe(true)
   expect(createdUser.enabled).toBe(false)
+  expect(createdUser.role).toBe('COMMENTATOR')
 })
 
 test('Should enable user if valid token', async () => {
@@ -102,8 +100,10 @@ test('Should not signup user with invalid (not strong enough) password', async (
   const variables = {
     data: {
       name: 'Andrew',
-      email: 'andrew@example.com',
-      password: 'password',
+      email: 'andrew@example.com'
+    },
+    password: {
+      newPassword: 'password',
       retypedPassword: 'password'
     }
   }
@@ -117,8 +117,10 @@ test("Should not signup user with invalid retypedPassword (doesn't match with pa
   const variables = {
     data: {
       name: 'Andrew',
-      email: 'andrew@example.com',
-      password: 'pe_c52C?CS86*efs',
+      email: 'andrew@example.com'
+    },
+    password: {
+      newPassword: 'pe_c52C?CS86*efs',
       retypedPassword: 'pe_c52C?CS86efs'
     }
   }

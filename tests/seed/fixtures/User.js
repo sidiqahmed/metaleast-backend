@@ -26,10 +26,14 @@ const users = [
 ]
 
 const newUser = {
-  name: 'New User',
-  email: 'new@user.com',
-  password: 'apskfn6dsjsjMPE',
-  retypedPassword: 'apskfn6dsjsjMPE'
+  data: {
+    name: 'New User',
+    email: 'new@user.com'
+  },
+  password: {
+    newPassword: 'apskfn6dsjsjMPE',
+    retypedPassword: 'apskfn6dsjsjMPE'
+  }
 }
 
 export { users as default, newUser }

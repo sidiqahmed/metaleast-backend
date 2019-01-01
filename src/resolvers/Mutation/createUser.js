@@ -2,16 +2,14 @@ import validatePassword from '../../utils/validatePassword'
 import sendValidationEmail from '../../utils/sendValidationEmail'
 import generateToken from '../../utils/generateToken'
 
-const createUser = async (parent, { data }, { prisma }, info) => {
+const createUser = async (parent, { data, password }, { prisma }, info) => {
   // Validate password
-  const password = await validatePassword(data.password, data.retypedPassword)
-
-  const { retypedPassword, ...newData } = data
-
-  const newUser = await prisma.mutation.createUser(
-    { data: { ...newData, password } },
-    info
+  data.password = await validatePassword(
+    password.newPassword,
+    password.retypedPassword
   )
+
+  const newUser = await prisma.mutation.createUser({ data }, info)
 
   // Generate validation token
   const validationToken = generateToken(newUser.id, '7 days')

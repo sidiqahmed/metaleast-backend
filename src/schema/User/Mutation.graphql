@@ -1,7 +1,12 @@
 type Mutation {
-  createUser(data: CreateUserInput!): User!
+  createUser(data: CreateUserInput!, password: CreatePasswordInput!): User!
   confirmEmail(validationToken: String!): User
   login(data: LoginUserInput!): AuthPayload!
-  updateUser(id: ID, data: UpdateUserInput!): User!
+  updateUser(
+    id: ID
+    currentPassword: String!
+    data: UpdateUserInput
+    password: CreatePasswordInput
+  ): User!
   deleteUser(id: ID): User!
 }

@@ -1,7 +1,10 @@
 input CreateUserInput {
   name: String!
   email: String!
-  password: String!
+}
+
+input CreatePasswordInput {
+  newPassword: String!
   retypedPassword: String!
 }
 
@@ -13,5 +16,4 @@ input LoginUserInput {
 input UpdateUserInput {
   name: String
   email: String
-  password: String
 }
