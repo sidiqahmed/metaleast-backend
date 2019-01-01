@@ -9,6 +9,8 @@ const login = {
       `
       {
         id
+        name
+        email
         password
         enabled
         banned {
@@ -16,11 +18,11 @@ const login = {
           comment
           debanned
         }
+        createdAt
+        updatedAt
       }
     `
     )
-
-    console.log(user)
     // Check if user exists
     if (!user) {
       throw new Error('Unable to login')

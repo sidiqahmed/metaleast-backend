@@ -7,8 +7,6 @@ const sendValidationEmail = ({ name, email }, token) => {
   <p>Not a link (yet): ${token}</p>
   `
 
-  console.log(process.env.SEND_EMAIL)
-
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: 465,

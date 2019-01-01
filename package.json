@@ -11,7 +11,7 @@
     "dev": "env-cmd ./config/dev.env nodemon src/index.js --ext js,graphql --exec babel-node",
     "deploy-test": "prisma deploy prisma -e config/test.env",
     "reset-test": "prisma reset prisma -e config/test.env",
-    "test": "env-cmd ./config/test.env jest --watchAll --runInBand",
+    "test": "env-cmd ./config/test.env jest --watch --runInBand",
     "get-schema": "graphql get-schema -p prisma --dotenv config/dev.env",
     "get-token": "prisma token prisma  -e config/dev.env"
   },
