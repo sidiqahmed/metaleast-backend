@@ -1,4 +1,5 @@
 import getUserId from '../../utils/getUserId'
+import isAdmin from '../../utils/isAdmin'
 
 const deleteUser = async (parent, { id }, { prisma, request }, info) => {
   // Get user ID from token (will throw an error if unauthenticated)
@@ -18,16 +19,8 @@ const deleteUser = async (parent, { id }, { prisma, request }, info) => {
   }
 
   // If id is given and connected user is admin, delete given user
-  const isAdmin = ['ADMIN', 'SUPERADMIN'].indexOf(connectedUser.role) > -1
-  if (isAdmin) {
-    return prisma.mutation.deleteUser(
-      {
-        where: {
-          id
-        }
-      },
-      info
-    )
+  if (isAdmin(connectedUser)) {
+    return prisma.mutation.deleteUser({ where: { id } }, info)
   }
 
   // If id is given and connected user is not admin, throw an error
